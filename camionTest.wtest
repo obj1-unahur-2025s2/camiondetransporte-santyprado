@@ -11,5 +11,98 @@ describe "Test del camion" {
     camion.descargar(arenaAGranel)
     assert.equals(1000, camion.peso())
   }
+  test "Los pesos de todas las cosas cargadas con pares"{
+    camion.cargar(bumblebee)
+    bumblebee.cambioDeEstado(robot)
+    camion.cargar(knightRider)
+    arenaAGranel.cambiarPeso(8)
+    camion.cargar(arenaAGranel)
+    camion.cargar(paqueteDeLadrillos)
+    assert.that(camion.cargasPares())
+  }
+  test "Alguna cosa pesa un determinado valor" {
+    camion.cargar(bumblebee)
+    camion.cargar(bateria)
+    assert.that(camion.cargaConUnPeso(300))
+  }
+  test"Primera cosa cargada con un valor de nivel de peligrosidad"{
+    camion.cargar(bumblebee)
+    camion.cargar(knightRider)
+    camion.cargar(bateria)
+    bateria.cambioDeEstado(cargadoConMisiles)
+    assert.equals(knightRider,camion.cargaConPeligrosidad(10))
+  }
+  test "todas las cosas que superan un determinado nivel de peligrosidas"{
+    bumblebee.cambioDeEstado(robot)
+    camion.cargar(bumblebee)
+    camion.cargar(knightRider)
+    camion.cargar(bateria)
+    paqueteDeLadrillos.cambiarCantidad(16)
+    camion.cargar(paqueteDeLadrillos)
+    assert.equals([bumblebee,bateria], camion.todasLasCosasPeligrosas(29))
+  }
+  test "El camion no esta excedido de peso"{
+    bumblebee.cambioDeEstado(robot)
+    camion.cargar(bumblebee)
+    camion.cargar(bateria)
+    paqueteDeLadrillos.cambiarCantidad(16)
+    camion.cargar(paqueteDeLadrillos)
+    assert.notThat(camion.estaExcedido())
+  }
+  test "El camion puede circular en ruta"{
+    bumblebee.cambioDeEstado(robot)
+    camion.cargar(bumblebee)
+    camion.cargar(bateria)
+    paqueteDeLadrillos.cambiarCantidad(16)
+    camion.cargar(paqueteDeLadrillos)
+    assert.that(camion.puedeCircularEnRuta(133))
+  }
 
+}
+
+// Test de la parte 2
+describe "Test de las cosas y sus reacciones al cargarlas" {
+  test "Se le cargan al camion el KnighRider,arena a granel con 20 kilos y 20 kilos de residuos radioactivos" {
+    camion.cargar(knightRider)
+    arenaAGranel.cambiarPeso(20)
+    camion.cargar(arenaAGranel)
+    radioactivos.cambiarPeso(20)
+    camion.cargar(radioactivos)
+    assert.equals(camion.totalDeBultosCargados(),3)
+    assert.equals(arenaAGranel.peso(),10)
+    assert.equals(radioactivos.peso(),35)
+  }
+  test"Se le cargan al camion a bumblebee en auto y un embalaje"{
+    bumblebee.cambioDeEstado(auto)
+    camion.cargar(bumblebee)
+    camion.cargar(embalaje)
+    assert.equals(camion.totalDeBultosCargados(),4)
+    assert.equals(bumblebee.estado(),robot)
+  }
+  test"Se le cargan al camion 150 ladrillos"{
+    paqueteDeLadrillos.cambiarCantidad(150)
+    camion.cargar(paqueteDeLadrillos)
+    assert.equals(camion.totalDeBultosCargados(), 2)
+    assert.equals(paqueteDeLadrillos.peso(),324)
+  }
+  test"Se le carga una bateria sin misiles al camion"{
+    bateria.cambioDeEstado(descargado)
+    camion.cargar(bateria)
+    assert.equals(2,camion.totalDeBultosCargados())
+  }
+  test"Se carga un contenedor con bumblebee en auto y arena a granel de 20 kilos en su interior"{
+    bumblebee.cambioDeEstado(auto)
+    arenaAGranel.cambiarPeso(20)
+    bateria.cambioDeEstado(descargado)
+    contenedorPortuario.cargarCosa(bumblebee)
+    contenedorPortuario.cargarCosa(arenaAGranel)
+    contenedorPortuario.cargarCosa(bateria)
+    camion.cargar(contenedorPortuario)
+    assert.equals(camion.totalDeBultosCargados(),6)
+  }
+  test "Se cargan 30 kilos de residuos radioactivos" {
+    radioactivos.cambiarPeso(30)
+    camion.cargar(radioactivos)
+    assert.equals(camion.peso(),1045)
+  }
 }

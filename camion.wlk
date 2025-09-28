@@ -2,6 +2,7 @@ object camion {
     const carga = []
     method cargar(algo) {
       carga.add(algo)
+      algo.reaccionarAlCargar()
     }
     method descargar(algo){
         carga.remove(algo)
@@ -32,5 +33,6 @@ object camion {
     } 
 
     method cosaMasPesada()= carga.max({a =>a.peso()})
-    method contieneCosaQuePesa(maximo,minimo)=carga.any({c =>c.peso().between(miinimo, maximo)})
+    method contieneCosaQuePesa(maximo,minimo)=carga.any({c =>c.peso().between(minimo, maximo)})
+    method totalDeBultosCargados() = carga.sum({c=>c.cantidadDeBultos()})
 }
